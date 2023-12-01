@@ -45,6 +45,8 @@ fn second_soln(input: &str) {
     let mut has_match: bool;
     for c in (input).chars() {
         if c.is_digit(10) {
+            num.clear();
+            start = 0;
             if first == 0 {
                 first = c.to_digit(10).unwrap() as usize;
             } else {

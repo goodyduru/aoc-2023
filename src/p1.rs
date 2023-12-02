@@ -1,16 +1,16 @@
 use std::fs;
 
-fn main() {
-    let input_result = fs::read_to_string("input.txt");
+pub fn solve() {
+    let input_result = fs::read_to_string("inputs/p1.txt");
     let input = match input_result {
         Ok(i) => i,
         Err(_) => return
     };
-    first_soln(&input);
-    second_soln(&input);
+    first_puzzle(&input);
+    second_puzzle(&input);
 }
 
-fn first_soln(input: &str) {
+fn first_puzzle(input: &str) {
     let mut sum = 0;
     let mut first = 0;
     let mut second = 0;
@@ -33,7 +33,7 @@ fn first_soln(input: &str) {
     println!("First puzzle sum is {sum}");
 }
 
-fn second_soln(input: &str) {
+fn second_puzzle(input: &str) {
     let mut sum = 0;
     let mut first = 0;
     let mut second = 0;

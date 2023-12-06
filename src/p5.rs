@@ -3,13 +3,13 @@ use std::cmp::Ordering;
 use std::i64::MAX;
 
 #[derive(Debug)]
-struct EndItem {
+struct Item {
     source: i64,
     dest: i64,
     end: i64
 }
 
-impl EndItem {
+impl Item {
     fn new(source: i64, dest: i64, end: i64) -> Self {
         Self {
             source,
@@ -98,20 +98,20 @@ fn get_seeds(input: &String) -> (Vec<i64>, usize) {
     (seeds, index+1)
 }
 
-fn get_map(input: &str, final_map: bool) -> (Vec<EndItem>, usize) {
+fn get_map(input: &str, final_map: bool) -> (Vec<Item>, usize) {
     let mut range: i64;
     let mut source: i64 = -1;
     let mut dest: i64 = -1;
     let mut digit: i64 = -1;
     let mut prev = ' ';
     let mut index = 0;
-    let mut soil_map: Vec<EndItem> = Vec::new();
+    let mut soil_map: Vec<Item> = Vec::new();
     for c in input.chars() {
         if c == '\n' && prev == '\n' {
             break;
         } else if c == '\n' && dest >= 0 {
             range = digit;
-            let item = EndItem::new(source, dest, source+range);
+            let item = Item::new(source, dest, source+range);
             soil_map.push(item);
             source = -1;
             dest = -1;
@@ -132,15 +132,15 @@ fn get_map(input: &str, final_map: bool) -> (Vec<EndItem>, usize) {
     }
     if final_map {
         range = digit;
-        let item = EndItem::new(source, dest, source+range);
+        let item = Item::new(source, dest, source+range);
         soil_map.push(item);
     }
     soil_map.sort_by(|a, b| a.cmp(b));
     (soil_map, index+1)
 }
 
-fn search(haystack: &Vec<EndItem>, needle: i64) -> i64 {
-    let item = EndItem::new(needle, 0, 0);
+fn search(haystack: &Vec<Item>, needle: i64) -> i64 {
+    let item = Item::new(needle, 0, 0);
     let find = haystack.binary_search_by(|probe| probe.rcmp(&item));
 
     match find {
@@ -156,7 +156,7 @@ fn search(haystack: &Vec<EndItem>, needle: i64) -> i64 {
 
 fn second_puzzle(input: &String) {
     // build seeds
-    let (seeds, index) = get_item_seeds(input);
+    let (seeds, index) = get_seeds_as_items(input);
     // build maps
     let mut start = index;
     let (soil_map, index) = get_map(&input[start..], false);
@@ -184,21 +184,21 @@ fn second_puzzle(input: &String) {
     println!("Second puzzle solution: {minimum}")
 }
 
-fn get_item_seeds(input: &String) -> (Vec<EndItem>, usize) {
+fn get_seeds_as_items(input: &String) -> (Vec<Item>, usize) {
     let mut index = 0;
-    let mut seeds: Vec<EndItem> = Vec::new();
+    let mut seeds: Vec<Item> = Vec::new();
     let mut digit: i64 = -1;
     let mut source: i64 = -1;
     for c in input.chars() {
         if c == '\n' {
-            seeds.push(EndItem::new(source, 0, source+digit));
+            seeds.push(Item::new(source, 0, source+digit));
             break;
         }
         if !c.is_digit(10) && digit >= 0 {
             if source == -1 {
                 source = digit;
             } else {
-                seeds.push(EndItem::new(source, 0, source+digit));
+                seeds.push(Item::new(source, 0, source+digit));
                 source = -1;
             }
             digit = -1;
@@ -211,11 +211,11 @@ fn get_item_seeds(input: &String) -> (Vec<EndItem>, usize) {
     (seeds, index+1)
 }
 
-fn search_recursive(item: &EndItem, haystacks: &Vec<Vec<EndItem>>, index: usize) -> i64 {
+fn search_recursive(item: &Item, haystacks: &Vec<Vec<Item>>, index: usize) -> i64 {
     let haystack = &haystacks[index];
     let mut minimum = MAX;
-    let mut other_item = EndItem::new(item.source, item.dest, item.end);
-    let mut new_item: EndItem;
+    let mut other_item = Item::new(item.source, item.dest, item.end);
+    let mut new_item: Item;
     let mut source = item.source;
     let end = item.end;
     while source < end {
@@ -235,7 +235,7 @@ fn search_recursive(item: &EndItem, haystacks: &Vec<Vec<EndItem>>, index: usize)
                         minimum = loc;
                     }
                 } else {
-                    new_item = EndItem::new(found.dest + diff, 0, min_end-dest_diff);
+                    new_item = Item::new(found.dest + diff, 0, min_end-dest_diff);
                     loc = search_recursive(&new_item, haystacks, index+1);
                     if loc < minimum {
                         minimum = loc;
@@ -250,7 +250,7 @@ fn search_recursive(item: &EndItem, haystacks: &Vec<Vec<EndItem>>, index: usize)
                         loc = source;
                     }
                     else {
-                        new_item = EndItem::new(other_item.source, 0, other_item.end);
+                        new_item = Item::new(other_item.source, 0, other_item.end);
                         loc = search_recursive(&new_item, haystacks, index+1);
                     }
                     if loc < minimum {
@@ -269,7 +269,7 @@ fn search_recursive(item: &EndItem, haystacks: &Vec<Vec<EndItem>>, index: usize)
                         loc = source;
                     }
                     else {
-                        new_item = EndItem::new(other_item.source, 0, intersection);
+                        new_item = Item::new(other_item.source, 0, intersection);
                         loc = search_recursive(&new_item, haystacks, index+1);
                     }
                     if loc < minimum {

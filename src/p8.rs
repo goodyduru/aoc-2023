@@ -1,15 +1,15 @@
-use std::{fs, collections::HashMap};
+use std::{collections::HashMap, fs};
 
 struct Child {
     left: String,
-    right: String
+    right: String,
 }
 
 pub fn solve() {
     let input_result = fs::read_to_string("inputs/p8.txt");
     let input = match input_result {
         Ok(i) => i,
-        Err(_) => return
+        Err(_) => return,
     };
     first_puzzle(&input);
     second_puzzle(&input);
@@ -24,10 +24,16 @@ fn first_puzzle(input: &String) {
     let mut item = String::with_capacity(3);
     let mut map = HashMap::new();
 
-    for c in (input).chars() { 
+    for c in (input).chars() {
         if c == '\n' {
             if item.len() == 3 {
-                map.insert(item, Child{left: first, right: second});
+                map.insert(
+                    item,
+                    Child {
+                        left: first,
+                        right: second,
+                    },
+                );
                 item = String::with_capacity(3);
                 first = String::with_capacity(3);
                 second = String::with_capacity(3);
@@ -54,8 +60,14 @@ fn first_puzzle(input: &String) {
             }
         }
     }
-    map.insert(item, Child{left: first, right: second});
-    
+    map.insert(
+        item,
+        Child {
+            left: first,
+            right: second,
+        },
+    );
+
     let mut found = false;
     let mut steps = 0;
     let mut current = "AAA";
@@ -66,7 +78,7 @@ fn first_puzzle(input: &String) {
                 break;
             }
             let child = map.get(current).unwrap();
-            current = if c == 'L' {&child.left} else {&child.right};
+            current = if c == 'L' { &child.left } else { &child.right };
             steps += 1;
         }
     }
@@ -83,13 +95,19 @@ fn second_puzzle(input: &String) {
     let mut map = HashMap::new();
     let mut starts: Vec<String> = Vec::new();
 
-    for c in (input).chars() { 
+    for c in (input).chars() {
         if c == '\n' {
             if item.len() == 3 {
                 if item.ends_with('A') {
                     starts.push(item.clone());
                 }
-                map.insert(item, Child{left: first, right: second});
+                map.insert(
+                    item,
+                    Child {
+                        left: first,
+                        right: second,
+                    },
+                );
                 item = String::with_capacity(3);
                 first = String::with_capacity(3);
                 second = String::with_capacity(3);
@@ -119,7 +137,13 @@ fn second_puzzle(input: &String) {
     if item.ends_with('A') {
         starts.push(item.clone());
     }
-    map.insert(item, Child{left: first, right: second});
+    map.insert(
+        item,
+        Child {
+            left: first,
+            right: second,
+        },
+    );
 
     let mut found: bool;
     let mut steps: Vec<u64> = Vec::new();
@@ -135,7 +159,7 @@ fn second_puzzle(input: &String) {
                     break;
                 }
                 let child = map.get(current).unwrap();
-                current = if c == 'L' {&child.left} else {&child.right};
+                current = if c == 'L' { &child.left } else { &child.right };
                 step += 1;
             }
         }

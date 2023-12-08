@@ -4,7 +4,7 @@ pub fn solve() {
     let input_result = fs::read_to_string("inputs/p1.txt");
     let input = match input_result {
         Ok(i) => i,
-        Err(_) => return
+        Err(_) => return,
     };
     first_puzzle(&input);
     second_puzzle(&input);
@@ -22,13 +22,21 @@ fn first_puzzle(input: &str) {
                 second = c.to_digit(10).unwrap();
             }
         } else if c == '\n' {
-            first = if second == 0 {first*10 + first} else {first*10 + second};
+            first = if second == 0 {
+                first * 10 + first
+            } else {
+                first * 10 + second
+            };
             sum += first;
             first = 0;
             second = 0;
         }
     }
-    first = if second == 0 {first*10 + first} else {first*10 + second};
+    first = if second == 0 {
+        first * 10 + first
+    } else {
+        first * 10 + second
+    };
     sum += first;
     println!("First puzzle sum is {sum}");
 }
@@ -40,7 +48,7 @@ fn second_puzzle(input: &str) {
     let mut start = 0;
     let mut num = String::new();
     let numbers = [
-        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
     ];
     let mut has_match: bool;
     for c in (input).chars() {
@@ -53,7 +61,11 @@ fn second_puzzle(input: &str) {
                 second = c.to_digit(10).unwrap() as usize;
             }
         } else if c == '\n' {
-            first = if second == 0 {first*10 + first} else {first*10 + second};
+            first = if second == 0 {
+                first * 10 + first
+            } else {
+                first * 10 + second
+            };
             sum += first;
             first = 0;
             second = 0;
@@ -85,7 +97,7 @@ fn second_puzzle(input: &str) {
                     }
                     index += 1;
                 }
-                if !has_match  {
+                if !has_match {
                     start += 1;
                 }
             }
@@ -95,7 +107,11 @@ fn second_puzzle(input: &str) {
             }
         }
     }
-    first = if second == 0 {first*10 + first} else {first*10 + second};
+    first = if second == 0 {
+        first * 10 + first
+    } else {
+        first * 10 + second
+    };
     sum += first;
     println!("Second puzzle sum is {sum}");
 }

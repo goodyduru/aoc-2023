@@ -1,10 +1,10 @@
-use std::{fs, collections::HashMap, cmp::Ordering};
+use std::{cmp::Ordering, collections::HashMap, fs};
 
 #[derive(Debug)]
 struct Hand {
     bid: u32,
     card_type: i8,
-    values: [i8; 5]
+    values: [i8; 5],
 }
 
 impl Hand {
@@ -12,7 +12,7 @@ impl Hand {
         Hand {
             bid: 0,
             card_type: 0,
-            values: [0; 5]
+            values: [0; 5],
         }
     }
 
@@ -34,22 +34,22 @@ impl Hand {
             joker = 0;
         }
         if counter.len() == 5 {
-            self.card_type = if joker == 0 {1} else {2} ;
+            self.card_type = if joker == 0 { 1 } else { 2 };
         } else if counter.len() == 4 {
-            self.card_type = if joker > 0 {4} else {2};
+            self.card_type = if joker > 0 { 4 } else { 2 };
         } else if counter.len() == 3 {
             if joker > 0 && max == 2 {
-                self.card_type = if joker == 2 {6} else {5};
+                self.card_type = if joker == 2 { 6 } else { 5 };
             } else if joker > 0 && max == 3 {
                 self.card_type = 6;
             } else {
-                self.card_type = if max == 2 {3} else {4};
+                self.card_type = if max == 2 { 3 } else { 4 };
             }
         } else if counter.len() == 2 {
             if joker > 0 {
                 self.card_type = 7;
             } else {
-                self.card_type = if max == 3 {5} else {6};
+                self.card_type = if max == 3 { 5 } else { 6 };
             }
         } else {
             self.card_type = 7;
@@ -58,18 +58,18 @@ impl Hand {
 
     fn cmp(&self, other: &Self) -> Ordering {
         if self.card_type > other.card_type {
-            return Ordering::Greater
+            return Ordering::Greater;
         }
         if self.card_type < other.card_type {
-            return Ordering::Less
+            return Ordering::Less;
         }
 
         for i in 0..self.values.len() {
             if self.values[i] > other.values[i] {
-                return Ordering::Greater
+                return Ordering::Greater;
             }
             if self.values[i] < other.values[i] {
-                return Ordering::Less
+                return Ordering::Less;
             }
         }
 
@@ -81,7 +81,7 @@ pub fn solve() {
     let input_result = fs::read_to_string("inputs/p7.txt");
     let input = match input_result {
         Ok(i) => i,
-        Err(_) => return
+        Err(_) => return,
     };
     puzzle(&input, false);
     puzzle(&input, true)
@@ -108,8 +108,8 @@ fn puzzle(input: &String, consider_joker: bool) {
         } else if !seen_space {
             hand.values[index] = label_map.get(&c).copied().unwrap();
             index += 1;
-        } else { 
-            digit = digit*10 + c.to_digit(10).unwrap();
+        } else {
+            digit = digit * 10 + c.to_digit(10).unwrap();
         }
     }
     hand.bid = digit;
@@ -125,9 +125,8 @@ fn puzzle(input: &String, consider_joker: bool) {
     println!("Puzzle: {soln}")
 }
 
-
 fn get_label_map(consider_joker: bool) -> HashMap<char, i8> {
-    let joker_val: i8 = if consider_joker {1} else {11};
+    let joker_val: i8 = if consider_joker { 1 } else { 11 };
     HashMap::from([
         ('2', 2),
         ('3', 3),
@@ -141,6 +140,6 @@ fn get_label_map(consider_joker: bool) -> HashMap<char, i8> {
         ('Q', 12),
         ('K', 13),
         ('A', 14),
-        ('J', joker_val)
+        ('J', joker_val),
     ])
 }

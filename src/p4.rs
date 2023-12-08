@@ -4,7 +4,7 @@ pub fn solve() {
     let input_result = fs::read_to_string("inputs/p4.txt");
     let input = match input_result {
         Ok(i) => i,
-        Err(_) => return
+        Err(_) => return,
     };
     first_puzzle(&input);
     second_puzzle(&input);
@@ -27,7 +27,7 @@ fn first_puzzle(input: &String) {
             continue;
         }
         if c.is_digit(10) {
-            digit = digit*10 + c.to_digit(10).unwrap();
+            digit = digit * 10 + c.to_digit(10).unwrap();
             continue;
         }
         if c == ' ' && digit > 0 {
@@ -43,7 +43,7 @@ fn first_puzzle(input: &String) {
         match c {
             ':' => {
                 seen_colon = true;
-            },
+            }
             '|' => {
                 seen_bar = true;
                 index = 0;
@@ -57,8 +57,10 @@ fn first_puzzle(input: &String) {
                 seen_colon = false;
                 seen_bar = false;
                 digit = 0;
-            },
-            _ => {continue;}
+            }
+            _ => {
+                continue;
+            }
         }
     }
     winning_cards.sort();
@@ -74,9 +76,9 @@ fn sum_cards(winning_cards: &[u32], my_cards: &[u32]) -> i32 {
         let result = my_cards[j..].binary_search(s);
         match result {
             Ok(k) => {
-                points = if points == 0 {1} else {points*2};
-                j = k+1;
-            },
+                points = if points == 0 { 1 } else { points * 2 };
+                j = k + 1;
+            }
             Err(k) => {
                 j = k;
             }
@@ -86,7 +88,7 @@ fn sum_cards(winning_cards: &[u32], my_cards: &[u32]) -> i32 {
 }
 
 fn second_puzzle(input: &String) {
-    const  MAX_WINNINGS: usize = 10;
+    const MAX_WINNINGS: usize = 10;
     let mut winning_cards: [u32; MAX_WINNINGS] = [0; MAX_WINNINGS];
     let mut my_cards: [u32; 25] = [0; 25];
     let mut copies: [u32; MAX_WINNINGS] = [1; MAX_WINNINGS];
@@ -107,7 +109,7 @@ fn second_puzzle(input: &String) {
             continue;
         }
         if c.is_digit(10) {
-            digit = digit*10 + c.to_digit(10).unwrap();
+            digit = digit * 10 + c.to_digit(10).unwrap();
             continue;
         }
         if c == ' ' && digit > 0 {
@@ -123,7 +125,7 @@ fn second_puzzle(input: &String) {
         match c {
             ':' => {
                 seen_colon = true;
-            },
+            }
             '|' => {
                 seen_bar = true;
                 index = 0;
@@ -132,11 +134,11 @@ fn second_puzzle(input: &String) {
                 my_cards[index] = digit;
                 winning_cards.sort();
                 my_cards.sort();
-                copy = copies[line_num%MAX_WINNINGS];
-                copies[line_num%MAX_WINNINGS] = 1;
+                copy = copies[line_num % MAX_WINNINGS];
+                copies[line_num % MAX_WINNINGS] = 1;
                 points = count_points(&winning_cards, &my_cards);
-                for i in 1..points+1 {
-                    copies[(line_num+i)%MAX_WINNINGS] += copy;
+                for i in 1..points + 1 {
+                    copies[(line_num + i) % MAX_WINNINGS] += copy;
                 }
                 sum += copy;
                 index = 0;
@@ -144,11 +146,13 @@ fn second_puzzle(input: &String) {
                 seen_bar = false;
                 digit = 0;
                 line_num += 1;
-            },
-            _ => {continue;}
+            }
+            _ => {
+                continue;
+            }
         }
     }
-    sum += copies[line_num%MAX_WINNINGS];
+    sum += copies[line_num % MAX_WINNINGS];
     println!("Second puzzle sum is {sum}");
 }
 
@@ -160,8 +164,8 @@ fn count_points(winning_cards: &[u32], my_cards: &[u32]) -> usize {
         match result {
             Ok(k) => {
                 points += 1;
-                j = k+1;
-            },
+                j = k + 1;
+            }
             Err(k) => {
                 j = k;
             }

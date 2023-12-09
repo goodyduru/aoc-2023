@@ -11,6 +11,11 @@ pub fn solve() {
     puzzle(&input, false);
     let elapsed = Instant::elapsed(&now);
     println!("{:?}", elapsed);
+    let now = Instant::now();
+    la(&input, true);
+    la(&input, false);
+    let elapsed = Instant::elapsed(&now);
+    println!("{:?}", elapsed);
 }
 
 fn puzzle(input: &String, is_next: bool) {
@@ -55,7 +60,7 @@ fn interpol(sequence: &mut Vec<i64>, is_next: bool) -> i64 {
             if !is_same {
                 break;
             }
-            if sequence[i] != sequence[i-1] {
+            if sequence[i] != sequence[i - 1] {
                 is_same = false;
             }
         }
@@ -64,7 +69,7 @@ fn interpol(sequence: &mut Vec<i64>, is_next: bool) -> i64 {
         }
 
         for i in 1..sequence.len() - n {
-            sequence[i-1] = sequence[i] - sequence[i-1];
+            sequence[i - 1] = sequence[i] - sequence[i - 1];
         }
         coef.push(sequence[0]);
         n += 1;
@@ -72,17 +77,15 @@ fn interpol(sequence: &mut Vec<i64>, is_next: bool) -> i64 {
 
     if is_next {
         p(coef, x)
-    }
-    else {
+    } else {
         prev(coef)
     }
-
 }
 
 fn p(coef: Vec<i64>, x: i64) -> i64 {
     let mut ans: i64 = 0;
     for i in 0..coef.len() {
-        ans += coef[i]*g(i as i64, x);
+        ans += coef[i] * g(i as i64, x);
     }
     ans
 }
@@ -91,18 +94,68 @@ fn g(r: i64, x: i64) -> i64 {
     let mut ans: i64 = 1;
     let mut fact: i64 = 1;
     for i in 1..=r {
-
         fact *= i;
-        ans *= x-i+1;
+        ans *= x - i + 1;
     }
 
-    ans/fact
+    ans / fact
 }
 
 fn prev(coef: Vec<i64>) -> i64 {
     let mut diff: i64 = 0;
-    for i in {0..coef.len()}.rev() {
+    for i in { 0..coef.len() }.rev() {
         diff = coef[i] - diff;
     }
     diff
+}
+
+fn la(input: &String, is_next: bool) {
+    let mut digit: i64 = 0;
+    let mut neg: i64 = 1;
+    let mut sequence: Vec<i64> = Vec::new();
+    let mut sum = 0;
+    for c in input.chars() {
+        if c == '\n' {
+            digit *= neg;
+            sequence.push(digit);
+            let x = if is_next { sequence.len() as i64 } else { -1 };
+            sum += lagrange(&sequence, x);
+            sequence.clear();
+            neg = 1;
+            digit = 0;
+        } else if c == '-' {
+            neg = -1;
+        } else if c == ' ' {
+            digit *= neg;
+            sequence.push(digit);
+            neg = 1;
+            digit = 0;
+        } else {
+            digit = digit * 10 + c.to_digit(10).unwrap() as i64;
+        }
+    }
+    digit *= neg;
+    sequence.push(digit);
+    let x = if is_next { sequence.len() as i64 } else { -1 };
+    sum += lagrange(&sequence, x);
+    println!("Puzzle soln: {sum}");
+}
+
+fn lagrange(sequence: &Vec<i64>, x: i64) -> i64 {
+    let mut ans: f64 = 0.0;
+    for i in 0..sequence.len() {
+        let mut num = 1.0;
+        let mut den = 1.0;
+        for j in 0..sequence.len() {
+            if i == j {
+                continue;
+            }
+            let u = i as f64;
+            let v = j as f64;
+            num *= x as f64 - v;
+            den *= u - v
+        }
+        ans += sequence[i] as f64 * (num / den);
+    }
+    ans.round() as i64
 }

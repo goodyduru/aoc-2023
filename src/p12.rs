@@ -99,7 +99,14 @@ fn second_puzzle(input: &String) {
     println!("First puzzle: {sum}");
 }
 
-fn calculate(record: &String, groups: &Vec<usize>, checked: &mut HashMap<(usize, usize, usize), u64>, chpos: usize, numpos: usize, hashes: usize) -> u64 {
+fn calculate(
+    record: &String,
+    groups: &Vec<usize>,
+    checked: &mut HashMap<(usize, usize, usize), u64>,
+    chpos: usize,
+    numpos: usize,
+    hashes: usize,
+) -> u64 {
     let key = (chpos, numpos, hashes);
     if checked.contains_key(&key) {
         return checked[&key];
@@ -119,12 +126,12 @@ fn calculate(record: &String, groups: &Vec<usize>, checked: &mut HashMap<(usize,
     for c in options.chars() {
         let d = record.chars().nth(chpos as usize).unwrap();
         if d == c || d == '?' {
-            if c== '.' && hashes == 0 {
-                answer += calculate(record, groups, checked, chpos+1, numpos, hashes);
+            if c == '.' && hashes == 0 {
+                answer += calculate(record, groups, checked, chpos + 1, numpos, hashes);
             } else if c == '.' && hashes > 0 && numpos < groups.len() && groups[numpos] == hashes {
-                answer += calculate(record, groups, checked, chpos+1, numpos+1, 0)
+                answer += calculate(record, groups, checked, chpos + 1, numpos + 1, 0)
             } else if c == '#' {
-                answer += calculate(record, groups, checked, chpos+1, numpos, hashes+1)
+                answer += calculate(record, groups, checked, chpos + 1, numpos, hashes + 1)
             }
         }
     }

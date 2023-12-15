@@ -1,9 +1,9 @@
-use std::{fs, time::Instant, cmp::Ordering};
+use std::{cmp::Ordering, fs, time::Instant};
 
 struct Lens {
     label: String,
     focal_length: u8,
-    index: usize
+    index: usize,
 }
 
 impl Lens {
@@ -81,14 +81,24 @@ fn second_puzzle(input: &String) {
     for i in 0..256 {
         boxes[i].sort_by_key(|a| a.get_index());
         for j in 0..boxes[i].len() {
-            total += (i+1)*(j+1)*boxes[i][j].focal_length as usize;
+            total += (i + 1) * (j + 1) * boxes[i][j].focal_length as usize;
         }
     }
     println!("Part 2 soln: {total}");
 }
 
-fn update_boxes(boxes: &mut Vec<Vec<Lens>>, focal_length: u8, label: String, index: usize, current: usize) {
-    let lens = Lens {label: label, focal_length: focal_length, index: index};
+fn update_boxes(
+    boxes: &mut Vec<Vec<Lens>>,
+    focal_length: u8,
+    label: String,
+    index: usize,
+    current: usize,
+) {
+    let lens = Lens {
+        label: label,
+        focal_length: focal_length,
+        index: index,
+    };
     let find = boxes[current].binary_search_by(|probe| probe.cmp(&lens));
     match find {
         Ok(i) => {
@@ -97,7 +107,7 @@ fn update_boxes(boxes: &mut Vec<Vec<Lens>>, focal_length: u8, label: String, ind
             } else {
                 boxes[current].remove(i);
             }
-        },
+        }
         Err(_) => {
             if focal_length > 0 {
                 boxes[current].push(lens);

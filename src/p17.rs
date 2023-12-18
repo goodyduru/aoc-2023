@@ -62,7 +62,7 @@ impl Node {
 }
 
 pub fn solve() {
-    let input_result = fs::read_to_string("inputs/test.txt");
+    let input_result = fs::read_to_string("inputs/p17.txt");
     let input = match input_result {
         Ok(i) => i,
         Err(_) => return,

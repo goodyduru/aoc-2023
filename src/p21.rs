@@ -37,7 +37,7 @@ fn search(grid: &Vec<Vec<u8>>, target: i32, starter: (i32, i32, i32), can_expand
     let mut seen = HashSet::new();
     let mut queue = BinaryHeap::new();
     queue.push(Reverse(starter));
-    let mut answer = 0; 
+    let mut answer = 0;
     let max_x = grid[0].len() as i32;
     let max_y = grid.len() as i32;
     while let Some(Reverse(pos)) = queue.pop() {
@@ -55,51 +55,63 @@ fn search(grid: &Vec<Vec<u8>>, target: i32, starter: (i32, i32, i32), can_expand
                 continue;
             }
         }
-        let left = (steps+1, x-1, y);
-        let right = (steps+1, x+1, y);
-        let up = (steps+1, x, y-1);
-        let down = (steps+1, x, y+1);
+        let left = (steps + 1, x - 1, y);
+        let right = (steps + 1, x + 1, y);
+        let up = (steps + 1, x, y - 1);
+        let down = (steps + 1, x, y + 1);
         let mut new_x: i32;
         let mut new_y: i32;
         if can_expand {
-            new_x =  left.1.rem_euclid(max_x);
+            new_x = left.1.rem_euclid(max_x);
             new_y = left.2.rem_euclid(max_y);
         } else {
-            new_x =  left.1;
+            new_x = left.1;
             new_y = left.2;
         }
-        if (can_expand || (!can_expand && new_x >= 0 )) && grid[new_y as usize][new_x as usize] == b'.' && !seen.contains(&(left.1, left.2)) {
+        if (can_expand || (!can_expand && new_x >= 0))
+            && grid[new_y as usize][new_x as usize] == b'.'
+            && !seen.contains(&(left.1, left.2))
+        {
             queue.push(Reverse(left));
         }
 
         if can_expand {
-            new_x =  right.1.rem_euclid(max_x);
+            new_x = right.1.rem_euclid(max_x);
             new_y = right.2.rem_euclid(max_y);
         } else {
-            new_x =  right.1;
+            new_x = right.1;
             new_y = right.2;
         }
-        if (can_expand || (!can_expand && new_x < max_x )) && grid[new_y as usize][new_x as usize] == b'.' && !seen.contains(&(right.1, right.2)) {
+        if (can_expand || (!can_expand && new_x < max_x))
+            && grid[new_y as usize][new_x as usize] == b'.'
+            && !seen.contains(&(right.1, right.2))
+        {
             queue.push(Reverse(right));
         }
         if can_expand {
-            new_x =  up.1.rem_euclid(max_x);
+            new_x = up.1.rem_euclid(max_x);
             new_y = up.2.rem_euclid(max_y);
         } else {
-            new_x =  up.1;
+            new_x = up.1;
             new_y = up.2;
         }
-        if (can_expand || (!can_expand && new_y >= 0 )) && grid[new_y as usize][new_x as usize] == b'.' && !seen.contains(&(up.1, up.2)) {
+        if (can_expand || (!can_expand && new_y >= 0))
+            && grid[new_y as usize][new_x as usize] == b'.'
+            && !seen.contains(&(up.1, up.2))
+        {
             queue.push(Reverse(up));
         }
         if can_expand {
-            new_x =  down.1.rem_euclid(max_x);
+            new_x = down.1.rem_euclid(max_x);
             new_y = down.2.rem_euclid(max_y);
         } else {
-            new_x =  down.1;
+            new_x = down.1;
             new_y = down.2;
         }
-        if (can_expand || (!can_expand && new_y < max_y )) && grid[new_y as usize][new_x as usize] == b'.' && !seen.contains(&(down.1, down.2)) {
+        if (can_expand || (!can_expand && new_y < max_y))
+            && grid[new_y as usize][new_x as usize] == b'.'
+            && !seen.contains(&(down.1, down.2))
+        {
             queue.push(Reverse(down));
         }
         seen.insert((x, y));
@@ -123,19 +135,22 @@ fn second_puzzle(input: &String) {
         grid.push(row);
     });
 
-    let half = (grid.len()/2) as i32;
+    let half = (grid.len() / 2) as i32;
     let size = grid.len() as i32;
-    let targets = [half, half+size, half+size*2];
+    let targets = [half, half + size, half + size * 2];
 
-    let answers: Vec<i32> = targets.iter().map(|target| {
-        let s = starter.clone();
-        let answer = search(&grid, *target, s, true);
-        answer
-    }).collect();
-    let a = ((answers[2] + answers[0] - 2*answers[1]) / 2) as u64;
+    let answers: Vec<i32> = targets
+        .iter()
+        .map(|target| {
+            let s = starter.clone();
+            let answer = search(&grid, *target, s, true);
+            answer
+        })
+        .collect();
+    let a = ((answers[2] + answers[0] - 2 * answers[1]) / 2) as u64;
     let b = (answers[1] - answers[0] - a as i32) as u64;
     let c = (answers[0]) as u64;
     let n = (26501365 / size) as u64;
-    let result = a*n*n + b*n + c;
-    println!("Puzzle 2 soln: {result}") ;
+    let result = a * n * n + b * n + c;
+    println!("Puzzle 2 soln: {result}");
 }

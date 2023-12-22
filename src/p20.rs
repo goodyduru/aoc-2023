@@ -1,10 +1,14 @@
-use std::{collections::{HashMap, VecDeque}, fs, time::Instant};
+use std::{
+    collections::{HashMap, VecDeque},
+    fs,
+    time::Instant,
+};
 
 #[derive(Debug, PartialEq)]
 enum Type {
     BROADCASTER,
     CONJUCTION,
-    FLIPFLOP
+    FLIPFLOP,
 }
 
 #[derive(Debug)]
@@ -29,7 +33,7 @@ pub fn solve() {
 }
 
 fn first_puzzle(input: &String) {
-    let(mut map, broadcast, _) = parse_input(input);
+    let (mut map, broadcast, _) = parse_input(input);
     let mut high_pulse: usize = 0;
     let mut low_pulse: usize = 0;
     // Pulse -> Low: False, High: True
@@ -48,23 +52,23 @@ fn first_puzzle(input: &String) {
             match map[&index].category {
                 Type::BROADCASTER => {
                     handle_broadcast(&map[&index], index, pulse, &mut stack);
-                },
+                }
                 Type::CONJUCTION => {
                     handle_conjuction(map.get_mut(&index).unwrap(), index, from, pulse, &mut stack)
-                },
+                }
                 Type::FLIPFLOP => {
                     handle_flipflop(map.get_mut(&index).unwrap(), index, pulse, &mut stack)
                 }
             }
         }
     }
-    let total = high_pulse*low_pulse;
+    let total = high_pulse * low_pulse;
     println!("Puzzle 1 soln: {total}");
 }
 
 fn parse_input(input: &String) -> (HashMap<usize, Module>, usize, usize) {
     let mut map: HashMap<usize, Module> = HashMap::new();
-    let mut reverse_index: HashMap<usize, Vec<usize>>  = HashMap::new();
+    let mut reverse_index: HashMap<usize, Vec<usize>> = HashMap::new();
     let mut all: Vec<String> = vec!["".to_string()];
     let mut broadcast = 0;
     let mut rx_index = 0;
@@ -91,14 +95,19 @@ fn parse_input(input: &String) -> (HashMap<usize, Module>, usize, usize) {
                 all.push(key);
             }
         }
-        let mut module = Module {category: Type::FLIPFLOP, state: false, output: Vec::new(), inputs: HashMap::new()};
+        let mut module = Module {
+            category: Type::FLIPFLOP,
+            state: false,
+            output: Vec::new(),
+            inputs: HashMap::new(),
+        };
         if prefix == '&' {
             module.category = Type::CONJUCTION;
         } else if prefix == ' ' {
             module.category = Type::BROADCASTER;
             broadcast = key_index;
         }
-        
+
         for v in values {
             let found = all.iter().position(|x| x == v);
             let index: usize;
@@ -106,7 +115,7 @@ fn parse_input(input: &String) -> (HashMap<usize, Module>, usize, usize) {
                 Some(i) => {
                     module.output.push(i);
                     index = i;
-                },
+                }
                 None => {
                     index = all.len();
                     if v == "rx" {
@@ -136,13 +145,23 @@ fn parse_input(input: &String) -> (HashMap<usize, Module>, usize, usize) {
     (map, broadcast, rx_index)
 }
 
-fn handle_broadcast(module: &Module, index: usize, pulse: bool, stack: &mut VecDeque<(usize, usize, bool)>) {
+fn handle_broadcast(
+    module: &Module,
+    index: usize,
+    pulse: bool,
+    stack: &mut VecDeque<(usize, usize, bool)>,
+) {
     for i in &module.output {
         stack.push_back((index, *i, pulse));
     }
 }
 
-fn handle_flipflop(module: &mut Module, index: usize, pulse: bool, stack: &mut VecDeque<(usize, usize, bool)>) {
+fn handle_flipflop(
+    module: &mut Module,
+    index: usize,
+    pulse: bool,
+    stack: &mut VecDeque<(usize, usize, bool)>,
+) {
     if pulse {
         return;
     }
@@ -153,7 +172,13 @@ fn handle_flipflop(module: &mut Module, index: usize, pulse: bool, stack: &mut V
     }
 }
 
-fn handle_conjuction(module: &mut Module, index: usize, from: usize, pulse: bool, stack: &mut VecDeque<(usize, usize, bool)>) {
+fn handle_conjuction(
+    module: &mut Module,
+    index: usize,
+    from: usize,
+    pulse: bool,
+    stack: &mut VecDeque<(usize, usize, bool)>,
+) {
     module.inputs.insert(from, pulse);
     let mut output = false;
     for (_, state) in module.inputs.iter() {
@@ -168,10 +193,9 @@ fn handle_conjuction(module: &mut Module, index: usize, from: usize, pulse: bool
 }
 
 fn second_puzzle(input: &String) {
-    let(mut map, broadcast, parent) = parse_input(input);
+    let (mut map, broadcast, parent) = parse_input(input);
     let mut temp: HashMap<usize, Vec<usize>> = HashMap::new();
     let mut i = 0;
-
 
     // Pulse -> Low: False, High: True
     while i < 10000 {
@@ -192,19 +216,17 @@ fn second_puzzle(input: &String) {
             match map[&index].category {
                 Type::BROADCASTER => {
                     handle_broadcast(&map[&index], index, pulse, &mut stack);
-                },
+                }
                 Type::CONJUCTION => {
                     handle_conjuction(map.get_mut(&index).unwrap(), index, from, pulse, &mut stack)
-                },
+                }
                 Type::FLIPFLOP => {
                     handle_flipflop(map.get_mut(&index).unwrap(), index, pulse, &mut stack)
                 }
             }
         }
     }
-    let values: Vec<u64> = temp.iter().map(|(_, v)| {
-        v[0] as u64
-    }).collect();
+    let values: Vec<u64> = temp.iter().map(|(_, v)| v[0] as u64).collect();
     let lcm = values.into_iter().reduce(|a, b| lcm(a, b)).unwrap();
     println!("Puzzle 2 soln: {lcm}");
 }

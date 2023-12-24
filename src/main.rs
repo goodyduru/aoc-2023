@@ -1,5 +1,5 @@
-pub mod p23;
+pub mod p24;
 
 fn main() {
-    p23::solve();
+    p24::solve();
 }

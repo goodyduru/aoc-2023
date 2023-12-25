@@ -98,7 +98,6 @@ fn cramer(first: &Stone, second: &Stone, test_area: &(f64, f64)) -> usize {
 fn second_puzzle(input: &String) {
     let mut stones = parse(input);
     stones.sort_by(|a, b| a.cmp(b));
-    let mut answer = 0;
     let mut x_set = HashSet::new();
     let mut y_set = HashSet::new();
     let mut z_set = HashSet::new();
@@ -135,7 +134,7 @@ fn second_puzzle(input: &String) {
     let ypos = (m_a * xpos as f64 + c_a) as isize;
     let time = (xpos - stones[0].position.0) / (stones[0].velocity.0 - x);
     let zpos = stones[0].position.2 + (stones[0].velocity.2 - z) * time;
-    answer = xpos + ypos + zpos;
+    let answer = xpos + ypos + zpos;
     println!("Puzzle two: {answer}");
 }
 
